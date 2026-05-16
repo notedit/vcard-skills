@@ -2,70 +2,66 @@
 
 [![skills.sh](https://skills.sh/b/notedit/vcard-skills)](https://skills.sh/notedit/vcard-skills)
 
-## Introduction
+English: [README.EN.md](./README.EN.md)
 
-### English
-
-Reusable agent skills for creating social card sets from source content.
-
-### 中文
+## 简介
 
 用于基于源内容创建社交卡片合集的可复用代理技能。
 
-## Skills
+## 技能
 
 ### `text-card-generator`
 
-Generate polished, deterministic shareable card image sets with HTML/CSS plus Playwright screenshots.
+使用 HTML/CSS 和 Playwright 截图生成精致、可复现、适合分享的卡片图片集合。
 
-Use it for:
+适用于：
 
-- dense text cards;
-- finance, product, technical, or editorial explainers;
-- exact copy that needs reliable rendering;
-- square, vertical, story, or custom-ratio card exports.
+- 信息密集的文字卡片；
+- 金融、产品、技术或编辑类说明内容；
+- 需要稳定渲染的精确文案；
+- 方形、竖版、故事流或自定义比例的卡片导出。
 
 ### `image-card-generator`
 
-Generate information-first GPT Image 2-led social card sets.
+生成以信息为先、由 GPT Image 2 驱动的社交卡片合集。
 
-Use it for:
+适用于：
 
-- image-led explainers;
-- visual notes;
-- cover cards;
-- feed-ready card series where GPT Image 2 creates the final PNGs.
+- 以图片为主的说明内容；
+- 视觉笔记；
+- 封面卡片；
+- 适合信息流发布的系列卡片，由 GPT Image 2 生成最终 PNG。
 
-This skill expects an Aiberm-compatible image API key for real generation:
+这个技能在实际生成时需要一个兼容 Aiberm 的图片 API Key：
 
 ```bash
 export AIBERM_API_KEY=...
 ```
 
-It also accepts `AIBEAM_API_KEY` or `API_KEY`. Do not commit secrets to this repository.
+它也支持 `AIBEAM_API_KEY` 或 `API_KEY`。请不要将密钥提交到这个仓库。
 
-## Install
+## 安装
 
-Install all skills:
+安装全部技能：
 
 ```bash
 npx skills add notedit/vcard-skills
 ```
 
-Install one skill:
+安装单个技能：
 
 ```bash
 npx skills add notedit/vcard-skills --skill text-card-generator
 npx skills add notedit/vcard-skills --skill image-card-generator
 ```
 
-Install for Codex explicitly:
+显式为 Codex 安装：
 
 ```bash
 npx skills add notedit/vcard-skills --agent codex
 ```
 
-## Repository Layout
+## 仓库结构
 
 ```text
 skills/
@@ -79,22 +75,22 @@ skills/
     scripts/
 ```
 
-Each skill is self-contained. Relative paths in `SKILL.md` resolve inside the skill directory.
+每个技能都是自包含的。`SKILL.md` 中的相对路径会在各自的技能目录内解析。
 
-## Development
+## 开发
 
-Validate discovery from a checkout:
+在本地检出目录中验证技能发现：
 
 ```bash
 npx skills add . --list
 ```
 
-Install from a local checkout:
+从本地检出目录安装：
 
 ```bash
 npx skills add . --skill text-card-generator
 ```
 
-## License
+## 许可证
 
 MIT
