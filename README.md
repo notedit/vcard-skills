@@ -2,7 +2,15 @@
 
 [![skills.sh](https://skills.sh/b/notedit/vcard-skills)](https://skills.sh/notedit/vcard-skills)
 
+## Introduction
+
+### English
+
 Reusable agent skills for creating social card sets from source content.
+
+### 中文
+
+用于基于源内容创建社交卡片合集的可复用代理技能。
 
 ## Skills
 
