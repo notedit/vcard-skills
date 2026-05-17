@@ -29,7 +29,8 @@ Collect or infer:
 - `content`: source text, outline, notes, URL, topic, or brief.
 - `ratio`: default to `1:1` unless the user requests `3:4`, `9:16`, or another ratio.
 - `count`: default to an automatic count based on content density; accept explicit quantities.
-- `style`: accept explicit style directions, brand constraints, audience, mood, language, and platform.
+- `style`: accept explicit style directions, brand constraints, audience, mood, and platform.
+- `content-language`: zh / en / mixed. Infer from the source; ask only when ambiguous and it would change font selection. Drives the language override in `references/fonts.md`.
 - `output`: choose a clear local folder such as `cards/<slug>/` unless the user specifies one.
 
 If important facts may be current or disputed, search or verify before planning. Keep source attribution available for the user when research affects the content. See the Research & Fact Confirmation section for when this becomes a full deep-research pass instead of a quick check.
@@ -239,10 +240,34 @@ Use `references/design-languages.md` to define the card set's visual grammar ind
 - Choose 1 primary design language and optionally 1-2 modifiers. Do not combine more than 3 languages/modifiers unless the user asks for eclectic variation.
 - After choosing a primary design language, load its individual spec file from `references/design-languages/<name>.md` and follow its `Must Use`, `Must Not Use`, typography, layout, density, asset, and QA rules.
 - Supported primary languages include `editorial-artifact`, `swiss-poster`, `image-led-magazine`, `field-notes`, `newsroom-poster`, `product-catalog`, `cinematic-still`, and `data-poster`.
-- Supported modifiers include `scale-contrast`, `edge-crop`, `diagonal-tension`, `layered-depth`, `split-field`, `asymmetric-space`, `cutaway`, `stamp-label`, `receipt-form`, `annotation`, `big-number`, `paper-cut`, and `map-route`.
+- Supported modifiers include `scale-contrast`, `edge-crop`, `diagonal-tension`, `layered-depth`, `split-field`, `asymmetric-space`, `cutaway`, `stamp-label`, `receipt-form`, `annotation`, `big-number`, and `paper-cut`.
 - Users may choose a preset combination such as Technical but designed, Magazine explainer, Bold thesis, News incident, Archive dossier, Product specimen, or Data poster.
 - Keep the design-language combination stable across the set, but vary layout recipes and visual anchors per card.
 - When a card set mixes multiple primary languages, designate one primary language for the whole set and use other languages only as card-level accents.
+
+## Infographic Branch
+
+Use `references/infographic.md` when a card needs an infographic structure: lists, comparisons, sequential flows, hierarchies, relations, or statistical charts.
+
+- Trigger this branch when structure is the message, not only when numbers are present. A numbered list without connecting marks is still a `list`; a step flow with arrows or a rail is `sequential`.
+- The branch is inspired by AntV Infographic's structure-first classification, but this skill does **not** install or call `@antv/infographic`; build the final visual with local HTML/CSS and inline SVG inside the card page.
+- After choosing the theme and design language, create an `InfographicPlan` before writing HTML for any infographic card.
+- Classify by visible structure first: statistical / comparison / hierarchical / relational / sequential / list.
+- Do not use the infographic branch for location-based or floor-plan structures; those require verified spatial assets and a separate workflow.
+- Map the planned structure to existing card layout recipes such as `artifact-board`, `process-rail`, `split-diagram`, `before-after`, `proof-grid`, or `big-number`.
+- The infographic must be the card's structure and visual anchor, not a small centered chart, dashboard panel, or decorative diagram dropped beneath a headline.
+- Keep the normal export path unchanged: the final card remains a fixed `.card` HTML page rendered by `scripts/render-cards.mjs`.
+
+`InfographicPlan` is a planning contract, not a runtime schema:
+
+```text
+type: list | comparison | sequential | hierarchical | relational | statistical
+structure_intent: parallel | contrast | ordered-flow | parent-child | network | quantitative
+source_status: verified | user-provided | synthetic-demo | non-numeric
+visual_anchor: cards-list | split-field | rail | tree | node-diagram | data-mark
+layout_recipe: artifact-board | process-rail | split-diagram | before-after | proof-grid | big-number
+risk: weak-structure | chart-default-look | tiny-labels | fake-data | too-many-boxes
+```
 
 ## Workflow
 
@@ -274,13 +299,16 @@ Use `references/design-languages.md` to define the card set's visual grammar ind
    - The perturbation must affect the visible result, not only metadata. Rotate layout recipes, visual anchors, surface metaphors, and composition moves alongside theme / design-language tokens.
    - Assign one concrete layout recipe per card. For stronger design work, use `references/layouts/card-layouts.md`; for magazine/editorial cards, also use `references/magazine-card-adaptations.md`.
    - Assign a design-language combination when the style is open or the user wants more design variation. Load the individual spec file for the selected primary language from `references/design-languages/<name>.md`.
+   - Load `references/fonts.md` and run its font-selection algorithm: from the chosen preset × design-language × content-language, take the per-role candidate pools, apply hard-constraint filtering, then weighted-random pick one font per role for the whole set (seed the randomness with the output slug so a given set is reproducible but different topics vary). Record the selected display/serif/sans/mono families in `sources.md`.
    - For each card, identify the visual anchor and composition move before writing body copy. If the card is only text blocks, equal boxes, or a background grid, either choose a stronger layout or deliberately mark it as a low-design utility card.
    - Respect low-density primary language limits by moving detail to another card in the set, not by overloading `swiss-poster`, `cinematic-still`, quote, cover, or closer cards.
+   - If any card needs a list, comparison, sequence, hierarchy, relation, or statistical chart as its main expression, load `references/infographic.md` and write an `InfographicPlan` for that card before moving to concept confirmation.
 
 5. Plan concepts and request confirmation.
    - Present the resolved ratio, card count, selected theme direction and preset, selected design language/modifiers, content outline, and first-card concept.
    - When layout quality matters, include the layout plan: card role, layout recipe, visual anchor, composition move, text density, and asset slot.
    - State which card carries the useful detail when the cover or primary language is intentionally low-density.
+   - For any infographic card, include the `InfographicPlan` fields in the layout plan so the user can see the structure, source status, visual anchor, and risk before coding.
    - Make card 1 a precise high-impact cover: it must communicate the topic instantly, create curiosity, and feel worth opening and sharing.
    - Concept confirmation covers only the cover concept, content outline, and visual direction. Do not repeat questions about already-resolved ratio, count, theme, platform, or output constraints.
    - When the task is high-impact or the style is ambiguous after the question step, offer 3-5 visual directions before coding. Cover distinct options such as brand-aligned/conservative, structured/information-graphic, social-friendly, magazine/editorial, and bolder/shareable.
@@ -291,7 +319,7 @@ Use `references/design-languages.md` to define the card set's visual grammar ind
 6. Build the card webpages.
    - Create one HTML page per card, named predictably such as `card-01.html`, `card-02.html`.
    - Use one shared CSS file or shared design tokens so size, typography, spacing, palette, border radius, and component styling stay consistent.
-   - Choose fonts and colors that satisfy `references/taste.md`: do not default to Inter, do not use pure black, and avoid generic AI purple-blue gradients or neon glow effects.
+   - Choose fonts via the `references/fonts.md` selection algorithm decided in step 4; embed them locally by importing `assets/fonts/fonts.css` (or copying the used fonts into `cards/<slug>/assets/fonts/` and referencing them with local `@font-face`). Never load fonts from a CDN. Choose colors that satisfy `references/taste.md`: do not default to Inter, do not use pure black, and avoid generic AI purple-blue gradients or neon glow effects.
    - Set an explicit fixed canvas size derived from the ratio. Recommended bases:
      - `1:1`: `1080x1080`
      - `3:4`: `1080x1440`
@@ -301,6 +329,7 @@ Use `references/design-languages.md` to define the card set's visual grammar ind
    - Use real HTML/CSS text instead of baking text into images.
    - Use the same style language across cards; vary composition only enough to fit content.
    - Define shared layout primitives in CSS for the selected recipes before implementing individual cards. Each card should have a recognizable layout parent class such as `.layout-cover`, `.layout-split`, `.layout-artifact`, `.layout-rail`, `.layout-compare`, `.layout-quote`, or `.layout-checklist`.
+   - For infographic cards, implement the planned structure as semantic HTML/CSS or inline SVG. Keep SVG deterministic and local: no canvas-only rendering, external CDN icons, remote illustrations, runtime chart libraries, or baked text images.
    - For editorial magazine mode, build the shell with card-native classes in the local CSS. Do not paste PPT layout classes unless they are defined and adapted in the card set's CSS.
 
 7. Score and regenerate each card.
@@ -313,6 +342,7 @@ Use `references/design-languages.md` to define the card set's visual grammar ind
      - Information value: the set has at least one card with actionable or concrete detail, not only atmospheric headlines; any low-density card is justified by role or primary language.
      - Layout contract: the planned visual anchor is present and dominant enough, the recipe can be recognized from the screenshot, and the set does not repeat the same composition card after card.
      - Design expression: the card does not rely mainly on fine lines, grids, and boxed panels; those elements must be secondary to the visual anchor.
+     - Infographic structure when applicable: the card follows the `InfographicPlan`, the structure category is visibly correct, the structure is the dominant anchor, and statistical cards avoid fake data or dashboard aesthetics.
      - Design language: the selected primary language and modifiers are recognizable from the screenshot, and the relevant spec file's `Must Use` / `Must Not Use` rules are satisfied.
      - Taste baseline: every hard constraint in `references/taste.md` is satisfied — no Inter default, no pure black, no default centered hero, no three equal-card main layout, no AI-copy voice, no fake-looking data, no neon/glow AI aesthetics.
      - Editorial discipline when applicable: chrome and kicker are not redundant, image frames share consistent crop rules, and generated assets do not contain their own slide/card chrome.
@@ -370,7 +400,7 @@ npx playwright install chromium
 - Use concept variations before coding when style is ambiguous or the card set is high-impact.
 - Define theme tokens first: background, surface levels, border levels, text levels, accent trio, semantic colors, gradients, radius, shadow, and fonts.
 - Use tokens in component CSS. Avoid scattering literal colors outside the token block unless a one-off asset or data visualization genuinely requires it.
-- Do not use Inter as the default card font. Prefer Geist, Satoshi, Cabinet Grotesk, Outfit, Avenir Next, high-quality system sans, or appropriate serif/mono choices for the selected design language.
+- Do not use Inter as the default card font. Select concrete fonts via the weighted-random algorithm in `references/fonts.md` (preset × design-language × content-language → per-role pick). Do not hardcode a font list here; `references/fonts.md` is the single source of truth. Avenir Next and other paid/system fonts are disallowed because every font must be locally embeddable.
 - Do not use pure black. Use off-black, charcoal, zinc-like darks, or ink colors.
 - Do not copy external theme CSS wholesale. Recreate the needed palette and behavior in the local card style, and keep source inspiration in `sources.md` or `credits.md` when relevant.
 - Avoid one-note palettes unless the user explicitly asks for a monochrome look.
@@ -383,6 +413,6 @@ npx playwright install chromium
 - Prefer semantic HTML and CSS over canvas for card content unless the visual requires custom drawing.
 - Keep assets and source attribution inside the output folder.
 - Keep letter spacing at `0` unless the file's existing design system clearly requires uppercase tracking; do not use negative letter spacing.
-- For editorial layouts, manually control long Chinese title breaks and keep dense body copy in sans-serif; reserve serif/display type for headlines, quotes, and numbers.
+- For technical or dense cards, keep body copy in sans-serif and reserve serif/display type for headlines, quotes, and numbers. Editorial/literary presets (`magazine-eink`, `field-notes`, `kraft-editorial`) may use serif or kai (楷体) body per `references/fonts.md`. For editorial layouts, manually control long Chinese title breaks regardless of the body typeface.
 - For image-heavy cards, standardize image ratios or frame heights inside each group, crop from the bottom when using `cover`, and use `contain` for diagrams or text-bearing screenshots.
 - Do not skip visual verification. The final answer must state whether rendering and export succeeded.
