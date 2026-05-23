@@ -2,7 +2,8 @@
    规则与主题映射见 ../../references/fonts.md。
    家族名：Geist / Geist Mono / Space Grotesk / Newsreader / Source Serif 4 /
    Spectral / IBM Plex Mono / Libre Caslon Display / Satoshi / General Sans /
-   Cabinet Grotesk / Noto Sans SC / Noto Serif SC / LXGW WenKai* / Smiley Sans Oblique */
+   Cabinet Grotesk / Noto Sans SC / Noto Serif SC / LXGW WenKai* / Smiley Sans Oblique /
+   Zhuque Fangsong / LXGW Marker Gothic / Maple Mono CN / ZCOOL QingKe HuangYou / ZCOOL XiaoWei */
 
 @import url("./css/geist.css");
 @import url("./css/geist-mono.css");
@@ -18,8 +19,13 @@
 @import url("./css/libre-caslon-display.css");
 @import url("./css/noto-sans-sc.css");
 @import url("./css/noto-serif-sc.css");
+@import url("./css/zcool-qingke-huangyou.css");
+@import url("./css/zcool-xiaowei.css");
 @import url("./css/satoshi.css");
 @import url("./css/general-sans.css");
 @import url("./css/cabinet-grotesk.css");
+@import url("./css/lxgw-marker-gothic.css");
+@import url("./css/zhuque-fangsong.css");
+@import url("./css/maple-mono-cn.css");
 @import url("./packages/lxgw-wenkai/style.css");
 @import url("./packages/smiley-sans/font.css");

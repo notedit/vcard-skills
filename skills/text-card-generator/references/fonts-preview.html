@@ -197,7 +197,7 @@
   </div>
 
   <!-- ============ 中文 ============ -->
-  <h2 class="section">中文字体 · 10 款 <span>基座 OFL：思源黑 + 思源宋 + 更纱黑 Mono</span></h2>
+  <h2 class="section">中文字体 · 内嵌 9 款 + 系统回退 <span>OFL：思源黑/宋 · 朱雀仿宋 · 霞鹜文楷/漫黑 · 站酷黄油/小薇 · Maple Mono CN · 得意黑</span></h2>
 
   <h3 class="role">黑体 · 正文 / 标题（基座）</h3>
   <div class="grid">
@@ -232,10 +232,10 @@
       <div class="status" data-status>检测中…</div>
     </div>
     <div class="spec" data-f="Zhuque Fangsong, ZhuqueFangsong">
-      <div class="top"><span class="name">朱雀仿宋 Zhuque Fangsong</span><span class="badge local">未内嵌</span></div>
-      <div class="meta">仿宋 · OFL · 单字重 · 引用/注释/公文体</div>
+      <div class="top"><span class="name">朱雀仿宋 Zhuque Fangsong</span><span class="badge cdn">内嵌</span></div>
+      <div class="meta">仿宋 · OFL · 单字重 · 编辑/文学/历史感 · 编辑宋体备选</div>
       <div class="big" style="font-family:'Zhuque Fangsong','ZhuqueFangsong','Noto Serif SC',serif">清瘦有笔意</div>
-      <p class="para" style="font-family:'Zhuque Fangsong','ZhuqueFangsong','Noto Serif SC',serif">公文与文人气并存。注意单字重，不靠它撑标题层级。未安装则回退思源宋。</p>
+      <p class="para" style="font-family:'Zhuque Fangsong','ZhuqueFangsong','Noto Serif SC',serif">公文与文人气并存，宋朝体骨架。单字重，做正文/引用而非撑标题层级。</p>
       <div class="num" style="font-family:'Zhuque Fangsong','ZhuqueFangsong','Noto Serif SC',serif">附注 03 · 引文出处见 sources.md</div>
       <div class="status" data-status>检测中…</div>
     </div>
@@ -268,16 +268,32 @@
       <div class="num" style="font-family:'LXGW WenKai Mono','LXGW WenKai',monospace">2026-05-16 · v1.0</div>
       <div class="status" data-status>检测中…</div>
     </div>
+    <div class="spec" data-f="LXGW Marker Gothic">
+      <div class="top"><span class="name">霞鹜漫黑 LXGW Marker Gothic</span><span class="badge cdn">内嵌</span></div>
+      <div class="meta">手帐感黑体 · OFL · 单字重 · 教程/生活方式/成长类</div>
+      <div class="big" style="font-family:'LXGW Marker Gothic','Noto Sans SC',sans-serif">轻松有手感</div>
+      <p class="para" style="font-family:'LXGW Marker Gothic','Noto Sans SC',sans-serif">马克笔笔触的黑体，亲和不油腻。social-notebook / field-notes 的轻松气质首选。</p>
+      <div class="num" style="font-family:'LXGW Marker Gothic','Noto Sans SC',sans-serif">第 3 步 · 今天的小结</div>
+      <div class="status" data-status>检测中…</div>
+    </div>
   </div>
 
   <h3 class="role">等宽 · 技术 / 数据</h3>
   <div class="grid">
-    <div class="spec" data-f="Sarasa Mono SC">
-      <div class="top"><span class="name">更纱黑体 Mono Sarasa Mono SC</span><span class="badge local">未内嵌</span></div>
-      <div class="meta">等宽 · OFL · 多字重 · 中英 2:1 对齐 · 技术必备</div>
-      <div class="big" style="font-family:'Sarasa Mono SC','Noto Sans SC',monospace;font-weight:700">代码即文档</div>
-      <p class="para" style="font-family:'Sarasa Mono SC','Noto Sans SC',monospace">中文 abc 123 严格对齐。工程审美标杆。未安装则回退思源黑。</p>
-      <div class="num" style="font-family:'Sarasa Mono SC','Noto Sans SC',monospace">CPU 12% · MEM 3.4G · 200 OK</div>
+    <div class="spec" data-f="Maple Mono CN, Maple Mono NF CN">
+      <div class="top"><span class="name">Maple Mono CN</span><span class="badge cdn">内嵌</span></div>
+      <div class="meta">等宽圆角 · OFL · 单字重 · 中英 2:1 对齐 · footer/数据标签/代码感</div>
+      <div class="big" style="font-family:'Maple Mono CN','Geist Mono','Noto Sans SC',monospace">代码即文档</div>
+      <p class="para" style="font-family:'Maple Mono CN','Geist Mono','Noto Sans SC',monospace">中文 abc 123 严格对齐，圆角终端有现代感。含中文的等宽角色优先于 Geist Mono。</p>
+      <div class="num" style="font-family:'Maple Mono CN','Geist Mono','Noto Sans SC',monospace">CPU 12% · MEM 3.4G · 200 OK</div>
+      <div class="status" data-status>检测中…</div>
+    </div>
+    <div class="spec" data-f="Sarasa Mono SC, Sarasa Gothic SC">
+      <div class="top"><span class="name">更纱黑体 Sarasa Gothic / Mono SC</span><span class="badge local">未内嵌</span></div>
+      <div class="meta">等宽/黑体 · OFL · 官方仅 TTC/7z，无干净 woff2 源 · 系统回退</div>
+      <div class="big" style="font-family:'Sarasa Mono SC','Sarasa Gothic SC','Noto Sans SC',monospace;font-weight:700">代码即文档</div>
+      <p class="para" style="font-family:'Sarasa Mono SC','Sarasa Gothic SC','Noto Sans SC',monospace">工程审美标杆，但零依赖约束下无法内嵌。等宽回退 Maple Mono CN，黑体回退思源黑。</p>
+      <div class="num" style="font-family:'Sarasa Mono SC','Sarasa Gothic SC','Noto Sans SC',monospace">CPU 12% · MEM 3.4G · 200 OK</div>
       <div class="status" data-status>检测中…</div>
     </div>
   </div>
@@ -290,6 +306,22 @@
       <div class="big" style="font-family:'Smiley Sans Oblique','Noto Sans SC',sans-serif;font-size:46px">这就是态度</div>
       <p class="para" style="font-family:'Noto Sans SC'">紧凑、倾斜、有冲劲。处在「克制」边界——只做封面大字，多用即浮夸。</p>
       <div class="num" style="font-family:'Smiley Sans Oblique','Noto Sans SC',sans-serif">2026 · 限定</div>
+      <div class="status" data-status>检测中…</div>
+    </div>
+    <div class="spec" data-f="ZCOOL QingKe HuangYou">
+      <div class="top"><span class="name">站酷庆科黄油体 ZCOOL QingKe HuangYou</span><span class="badge cdn">内嵌</span></div>
+      <div class="meta">展示黑体 · OFL · 单字重 · ⚠ 仅封面 ≤1 处 · 复古招牌/重磅</div>
+      <div class="big" style="font-family:'ZCOOL QingKe HuangYou','Noto Sans SC',sans-serif;font-size:46px">复古招牌感</div>
+      <p class="para" style="font-family:'Noto Sans SC'">厚重圆润、招牌气，封面大字冲击力强。单字重，每套封面最多 1 处。</p>
+      <div class="num" style="font-family:'ZCOOL QingKe HuangYou','Noto Sans SC',sans-serif">年度盘点 2026</div>
+      <div class="status" data-status>检测中…</div>
+    </div>
+    <div class="spec" data-f="ZCOOL XiaoWei">
+      <div class="top"><span class="name">站酷小薇 ZCOOL XiaoWei</span><span class="badge cdn">内嵌</span></div>
+      <div class="meta">展示宋体 · OFL · 单字重 · ⚠ 仅封面 ≤1 处 · 文艺/轻古典</div>
+      <div class="big" style="font-family:'ZCOOL XiaoWei','Noto Serif SC',serif;font-size:46px">文艺轻古典</div>
+      <p class="para" style="font-family:'Noto Serif SC'">清秀宋体骨架，书摘/文艺封面/轻古典标题。单字重，做封面而非正文层级。</p>
+      <div class="num" style="font-family:'ZCOOL XiaoWei','Noto Serif SC',serif">书摘 · 卷一</div>
       <div class="status" data-status>检测中…</div>
     </div>
   </div>

@@ -61,6 +61,8 @@ FONTSOURCE = [
     ("libre-caslon-display", "@fontsource/libre-caslon-display@latest",   "400.css",   "Libre Caslon Display",    "Libre Caslon Display"),
     ("noto-sans-sc",         "@fontsource-variable/noto-sans-sc@latest",  "index.css", "Noto Sans SC Variable",   "Noto Sans SC"),
     ("noto-serif-sc",        "@fontsource-variable/noto-serif-sc@latest", "index.css", "Noto Serif SC Variable",  "Noto Serif SC"),
+    ("zcool-qingke-huangyou","@fontsource/zcool-qingke-huangyou@latest", "400.css",   "ZCOOL QingKe HuangYou",   "ZCOOL QingKe HuangYou"),
+    ("zcool-xiaowei",        "@fontsource/zcool-xiaowei@latest",          "400.css",   "ZCOOL XiaoWei",           "ZCOOL XiaoWei"),
 ]
 
 # 嵌套 @import 的整包（lxgw lite / 得意黑）：递归抓 css 与 woff2，保持相对结构。
@@ -82,6 +84,23 @@ FONTSHARE = [
     ("cabinet-grotesk", "Cabinet Grotesk"),
 ]
 
+# 单文件/压缩包字体：没有合适的 fontsource 分包，但授权允许随仓库分发。
+# 为控制体积，重型多字重字体只保留卡片最常用的 Regular。
+DIRECT_TTF = [
+    ("lxgw-marker-gothic", "LXGW Marker Gothic",
+     "https://github.com/google/fonts/raw/main/ofl/lxgwmarkergothic/LXGWMarkerGothic-Regular.ttf",
+     "LXGWMarkerGothic-Regular.ttf", 400, "OFL"),
+]
+
+ARCHIVE_TTF = [
+    ("zhuque-fangsong", "Zhuque Fangsong",
+     "https://github.com/TrionesType/zhuque/releases/download/v0.212/ZhuqueFangsong-v0.212.zip",
+     "ZhuqueFangsong-Regular.ttf", "ZhuqueFangsong-Regular.ttf", 400, "OFL"),
+    ("maple-mono-cn", "Maple Mono CN",
+     "https://github.com/subframe7536/Maple-font/releases/download/v7.9/MapleMono-CN-unhinted.zip",
+     "MapleMono-CN-Regular.ttf", "MapleMono-CN-Regular.ttf", 400, "OFL"),
+]
+
 report = []
 
 def do_fontsource(dirn, pkg, csspath, famv, famf):
@@ -94,6 +113,10 @@ def do_fontsource(dirn, pkg, csspath, famv, famf):
         # 把 url(./files/x.woff2) 改为指向集中 woff2 目录
         css = re.sub(r"url\(\.?/?(?:files/)?([^)]+\.woff2)\)",
                      lambda m: f"url(../woff2/{dirn}/{os.path.basename(m.group(1))})", css)
+        # fontsource often ships a secondary .woff fallback in the CSS. We only
+        # bundle woff2 to keep the skill small and deterministic, so remove the
+        # unused fallback references instead of leaving broken local urls.
+        css = re.sub(r",\s*url\(\.?/?(?:files/)?[^)]+\.woff\)\s*format\(['\"]woff['\"]\)", "", css)
         save(dst_css, css)
     files = re.findall(r"url\(\.\./woff2/%s/([^)]+\.woff2)\)" % re.escape(dirn),
                         open(dst_css).read())
@@ -169,6 +192,37 @@ def do_fontshare(slug, family):
     report.append((family, "fontshare/" + slug, 1, sz, "ITF-FFL"))
     print(f"  fontshare  {family:<22} weight={weight:<9} {human(sz)}")
 
+def write_ttf_face(dirn, family, filename, weight, license_name):
+    face = (f"/* {family} — {license_name} */\n"
+            f"@font-face{{font-family:'{family}';font-style:normal;font-display:swap;"
+            f"font-weight:{weight};src:url(../ttf/{dirn}/{filename}) format('truetype');}}\n")
+    save(os.path.join(OUT, "css", dirn + ".css"), face)
+
+def do_direct_ttf(dirn, family, url, filename, weight, license_name):
+    dst = os.path.join(OUT, "ttf", dirn, filename)
+    if need(dst):
+        save(dst, get(url, binary=True))
+    write_ttf_face(dirn, family, filename, weight, license_name)
+    sz = os.path.getsize(dst)
+    report.append((family, "ttf/" + dirn, 1, sz, license_name))
+    print(f"  direct     {family:<22} weight={weight:<9} {human(sz)}")
+
+def do_archive_ttf(dirn, family, url, member, filename, weight, license_name):
+    import zipfile, io
+    dst = os.path.join(OUT, "ttf", dirn, filename)
+    if need(dst):
+        data = get(url, binary=True, tries=2)
+        with zipfile.ZipFile(io.BytesIO(data)) as z:
+            names = z.namelist()
+            target = member if member in names else next((n for n in names if n.endswith("/" + member) or n.endswith(member)), None)
+            if not target:
+                raise RuntimeError(f"{member} not found in {url}")
+            save(dst, z.read(target))
+    write_ttf_face(dirn, family, filename, weight, license_name)
+    sz = os.path.getsize(dst)
+    report.append((family, "ttf/" + dirn, 1, sz, license_name))
+    print(f"  archive    {family:<22} weight={weight:<9} {human(sz)}")
+
 def walk_woff2(root):
     for dp, _, fs in os.walk(root):
         for f in fs:
@@ -207,20 +261,48 @@ for a in FONTSHARE:
     except Exception as e:  # noqa
         print(f"  ! {a[1]} FAILED: {e}")
 
+print("→ direct/archive CJK fonts (朱雀 / 霞鹜漫黑 / Maple Mono CN):")
+for a in DIRECT_TTF:
+    try:
+        do_direct_ttf(*a)
+    except Exception as e:  # noqa
+        print(f"  ! {a[1]} FAILED: {e}")
+for a in ARCHIVE_TTF:
+    try:
+        do_archive_ttf(*a)
+    except Exception as e:  # noqa
+        print(f"  ! {a[1]} FAILED: {e}")
+
 # 组装 master fonts.css
+# 只 @import 实际存在且非空的 css —— 下载失败的字体自动被排除，
+# 不会在卡片里引用一个加载不到的家族（“去掉无法完成下载的字体”由此结构性保证）。
+def have(rel):
+    p = os.path.join(OUT, rel)
+    return os.path.exists(p) and os.path.getsize(p) > 0
+
 imports = []
 for a in FONTSOURCE:
-    imports.append(f'@import url("./css/{a[0]}.css");')
+    if have(f"css/{a[0]}.css"):
+        imports.append(f'@import url("./css/{a[0]}.css");')
 for slug, _ in FONTSHARE:
-    imports.append(f'@import url("./css/{slug}.css");')
+    if have(f"css/{slug}.css"):
+        imports.append(f'@import url("./css/{slug}.css");')
+for dirn, _fam, _url, _fn, _w, _lic in DIRECT_TTF:
+    if have(f"css/{dirn}.css"):
+        imports.append(f'@import url("./css/{dirn}.css");')
+for dirn, _fam, _url, _mem, _fn, _w, _lic in ARCHIVE_TTF:
+    if have(f"css/{dirn}.css"):
+        imports.append(f'@import url("./css/{dirn}.css");')
 for dirn, top, _, _ in PACKAGED:
-    imports.append(f'@import url("./packages/{dirn}/{os.path.basename(top)}");')
+    if have(f"packages/{dirn}/{os.path.basename(top)}"):
+        imports.append(f'@import url("./packages/{dirn}/{os.path.basename(top)}");')
 
 master = "/* fonts.css — 本地内嵌字体（download-fonts.sh 生成，勿手改）\n" \
          "   规则与主题映射见 ../../references/fonts.md。\n" \
          "   家族名：Geist / Geist Mono / Space Grotesk / Newsreader / Source Serif 4 /\n" \
          "   Spectral / IBM Plex Mono / Libre Caslon Display / Satoshi / General Sans /\n" \
-         "   Cabinet Grotesk / Noto Sans SC / Noto Serif SC / LXGW WenKai* / Smiley Sans Oblique */\n\n" \
+         "   Cabinet Grotesk / Noto Sans SC / Noto Serif SC / LXGW WenKai* / Smiley Sans Oblique /\n" \
+         "   Zhuque Fangsong / LXGW Marker Gothic / Maple Mono CN / ZCOOL QingKe HuangYou / ZCOOL XiaoWei */\n\n" \
          + "\n".join(imports) + "\n"
 save(os.path.join(OUT, "fonts.css"), master)
 
@@ -231,9 +313,10 @@ lines = ["# Font bundle manifest (download-fonts.sh)", "",
 for fam, path, nf, sz, lic in report:
     lines.append(f"| {fam} | {path} | {nf} | {human(sz)} | {lic} |")
 lines += ["", f"**Total bundle: {human(total)}**", "",
-          "Not bundled (license forbids repo redistribution; system-font fallback only):",
-          "HarmonyOS Sans SC, Alibaba PuHuiTi 3.0, KingHwa OldSong, Zhuque Fangsong, Sarasa Mono SC.",
-          "Sarasa Mono SC / Zhuque Fangsong are OFL but lack a clean woff2 source; add manually if needed."]
+          "Not bundled (system-font fallback only):",
+          "- HarmonyOS Sans SC / Alibaba PuHuiTi 3.0 / KingHwa OldSong — license unclear for repo redistribution.",
+          "- Sarasa Gothic SC / Sarasa Mono SC — OFL, but only TTC/7z releases; no clean woff2/ttf source under the",
+          "  curl + python3-stdlib zero-dependency constraint. Treat as system fallback; add manually if a webfont appears."]
 save(os.path.join(OUT, "MANIFEST.md"), "\n".join(lines) + "\n")
 
 print(f"\n✓ fonts.css + MANIFEST.md written. Total bundle: {human(total)}")

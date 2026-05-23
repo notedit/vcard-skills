@@ -27,7 +27,7 @@ Create a set of shareable visual cards from source content. Treat each card as i
 Collect or infer:
 
 - `content`: source text, outline, notes, URL, topic, or brief.
-- `ratio`: default to `1:1` unless the user requests `3:4`, `9:16`, or another ratio.
+- `ratio`: default to `1:1` unless the user requests `3:4`, `9:16`, `2.35:1` (ultra-wide banner), or another ratio.
 - `count`: default to an automatic count based on content density; accept explicit quantities.
 - `style`: accept explicit style directions, brand constraints, audience, mood, and platform.
 - `content-language`: zh / en / mixed. Infer from the source; ask only when ambiguous and it would change font selection. Drives the language override in `references/fonts.md`.
@@ -117,8 +117,9 @@ Use these default choices:
 - `1:1` square card for general social sharing.
 - `3:4` vertical graphic card for richer text/image posts.
 - `9:16` story, reel, short-video cover, or mobile-first card.
+- `2.35:1` ultra-wide banner / hero / cover strip for site headers and section dividers.
 
-Accept free-form ratios such as `4:5`, `16:9`, or exact pixel sizes when the user provides them.
+Accept free-form ratios such as `4:5`, `16:9`, `2.35:1`, or exact pixel sizes when the user provides them.
 
 ### Count Question
 
@@ -324,7 +325,9 @@ risk: weak-structure | chart-default-look | tiny-labels | fake-data | too-many-b
      - `1:1`: `1080x1080`
      - `3:4`: `1080x1440`
      - `9:16`: `1080x1920`
-     - Custom `a:b`: use width `1080` and height `round(1080*b/a)` unless the user requests exact pixels.
+     - `16:9`: `1920x1080`
+     - `2.35:1`: `2538x1080` (ultra-wide banner/hero)
+     - Custom `a:b`: portrait/square use width `1080` and height `round(1080*b/a)`; landscape (a>b) use height `1080` and width `round(1080*a/b)`, so wide ratios stay high-resolution. Override with exact pixels when the user requests them.
    - Keep every card inside a single fixed-size `.card` root. Do not allow body scrolling.
    - Use real HTML/CSS text instead of baking text into images.
    - Use the same style language across cards; vary composition only enough to fit content.

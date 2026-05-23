@@ -16,14 +16,20 @@
 | Libre Caslon Display | libre-caslon-display | 2 | 40KB | OFL/ITF |
 | Noto Sans SC | noto-sans-sc | 101 | 4MB | OFL/ITF |
 | Noto Serif SC | noto-serif-sc | 101 | 6MB | OFL/ITF |
+| ZCOOL QingKe HuangYou | zcool-qingke-huangyou | 92 | 3MB | OFL/ITF |
+| ZCOOL XiaoWei | zcool-xiaowei | 92 | 3MB | OFL/ITF |
 | lxgw-wenkai | packages/lxgw-wenkai | 194 | 8MB | OFL |
 | smiley-sans | packages/smiley-sans | 80 | 1MB | OFL |
 | Satoshi | fontshare/satoshi | 1 | 42KB | ITF-FFL |
 | General Sans | fontshare/general-sans | 1 | 37KB | ITF-FFL |
 | Cabinet Grotesk | fontshare/cabinet-grotesk | 1 | 41KB | ITF-FFL |
+| LXGW Marker Gothic | ttf/lxgw-marker-gothic | 1 | 3MB | OFL |
+| Zhuque Fangsong | ttf/zhuque-fangsong | 1 | 8MB | OFL |
+| Maple Mono CN | ttf/maple-mono-cn | 1 | 18MB | OFL |
 
-**Total bundle: 20MB**
+**Total bundle: 56MB**
 
-Not bundled (license forbids repo redistribution; system-font fallback only):
-HarmonyOS Sans SC, Alibaba PuHuiTi 3.0, KingHwa OldSong, Zhuque Fangsong, Sarasa Mono SC.
-Sarasa Mono SC / Zhuque Fangsong are OFL but lack a clean woff2 source; add manually if needed.
+Not bundled (system-font fallback only):
+- HarmonyOS Sans SC / Alibaba PuHuiTi 3.0 / KingHwa OldSong — license unclear for repo redistribution.
+- Sarasa Gothic SC / Sarasa Mono SC — OFL, but only TTC/7z releases; no clean woff2/ttf source under the
+  curl + python3-stdlib zero-dependency constraint. Treat as system fallback; add manually if a webfont appears.

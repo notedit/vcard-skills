@@ -9,16 +9,18 @@ const RATIOS = {
   '4:5': { width: 1080, height: 1350 },
   '9:16': { width: 1080, height: 1920 },
   '16:9': { width: 1920, height: 1080 },
+  '2.35:1': { width: 2538, height: 1080 },
 };
 
 function usage() {
   console.log(`Usage:
-  node render-cards.mjs --input <html-dir> --output <png-dir> [--ratio 1:1|3:4|9:16] [--size 1080x1920] [--selector .card] [--scale 2]
+  node render-cards.mjs --input <html-dir> --output <png-dir> [--ratio 1:1|3:4|9:16|2.35:1] [--size 1080x1920] [--selector .card] [--scale 2]
 
 Options:
   --input     Directory containing card-*.html files, or any .html files.
   --output    Directory for PNG exports and audit.json.
-  --ratio     Aspect ratio. Defaults to 1:1. Supports known ratios or custom a:b.
+  --ratio     Aspect ratio. Defaults to 1:1. Known: 1:1 3:4 4:5 9:16 16:9 2.35:1.
+              Custom a:b also works (landscape bases on height 1080, else width 1080).
   --size      Exact viewport size in WIDTHxHEIGHT. Overrides --ratio.
   --selector  Element to screenshot when present. Defaults to .card.
   --scale     deviceScaleFactor. Defaults to 2 for retina-quality exports.
@@ -71,6 +73,13 @@ function viewportFromArgs(args) {
   const b = Number(match[2]);
   if (a <= 0 || b <= 0) throw new Error(`Invalid ratio: ${args.ratio}`);
 
+  // Portrait/square: base on width 1080. Landscape: base on height 1080 so
+  // wide custom ratios (e.g. 2.35:1, 3:1) export at usable resolution
+  // instead of a 1080px-wide, very short canvas.
+  if (a > b) {
+    const height = 1080;
+    return { width: Math.round((height * a) / b), height };
+  }
   const width = 1080;
   return { width, height: Math.round((width * b) / a) };
 }
